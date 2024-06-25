@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Korex StyleHub</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="Korex StyleHub" name="keywords">
+    <meta content="Korex StyleHub" name="description">
+
+    <!-- Favicon -->
+    <link href="img/logo.PNG" rel="icon"> 
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet"> 
+
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+
+    <!-- Libraries Stylesheet -->
+    <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="css/style.css" rel="stylesheet">
+    <link href="css/landingPage.css" rel="stylesheet">
+
+</head>
+
+<body>
+     <!-- Navbar Start -->
+     <%- include (`partials/shopHeader`); -%>
+     <!-- Navbar End -->
+
+    <!-- Page Header Start -->
+    <div class="container-fluid bg-secondary mb-5">
+        <div class="d-flex flex-column align-items-center justify-content-center" style="min-height: 300px">
+            <h1 class="font-weight-semi-bold text-uppercase mb-3">Baby Wears</h1>
+            <div class="d-inline-flex">
+                <p class="m-0"><a href="/index">Home</a></p>
+                <p class="m-0 px-2">-</p>
+                <p class="m-0">Baby Wears</p>
+            </div>
+        </div>
+    </div>
+    <!-- Page Header End -->
+
+
+    <!-- Shop Start -->
+    <div class="container-fluid pt-5">
+        <div class="row px-xl-5">
+            <!-- Shop Sidebar Start -->
+            <div class="col-lg-3 col-md-12">
+                <!-- Price Start -->
+                <div class="border-bottom mb-4 pb-4">
+                    <h5 class="font-weight-semi-bold mb-4">Filter by price</h5>
+                    <form id="priceFilterForm">
+                        <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
+                            <input type="checkbox" class="custom-control-input" checked id="price-all" value="All Price">
+                            <label class="custom-control-label" for="price-all">All Price</label>
+                            <span class="badge border font-weight-normal" id="price-all-quantity"></span>
+                        </div>
+                        <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
+                            <input type="checkbox" class="custom-control-input" id="price-1" value="0.00"> 
+                            <label class="custom-control-label" for="price-1">$0 - $50</label>
+                            <span class="badge border font-weight-normal" id="price-1-quantity"></span>
+                        </div>
+                        <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
+                            <input type="checkbox" class="custom-control-input" id="price-2" value="100.00"> 
+                            <label class="custom-control-label" for="price-2">$50 - $100</label>
+                            <span class="badge border font-weight-normal" id="price-2-quantity"></span>
+                        </div>
+                        <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
+                            <input type="checkbox" class="custom-control-input" id="price-3" value="200.00"> 
+                            <label class="custom-control-label" for="price-3">$100 - $200</label>
+                            <span class="badge border font-weight-normal" id="price-3-quantity"></span>
+                        </div>
+                        <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
+                            <input type="checkbox" class="custom-control-input" id="price-4" value="300.00"> 
+                            <label class="custom-control-label" for="price-4">$200 - $300</label>
+                            <span class="badge border font-weight-normal" id="price-4-quantity"></span>
+                        </div>
+                        <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between">
+                            <input type="checkbox" class="custom-control-input" id="price-5" value="400.00"> 
+                            <label class="custom-control-label" for="price-5">$300 - $400</label>
+                            <span class="badge border font-weight-normal" id="price-5-quantity"></span>
+                        </div>
+                    </form>
+                </div>
+                <!-- Price End -->
+                
+                <!-- Color Start -->
+                <div class="border-bottom mb-4 pb-4">
+                    <h5 class="font-weight-semi-bold mb-4">Filter by color</h5>
+                    <form id="colorFilterForm">
+                        <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
+                            <input type="checkbox" class="custom-control-input" checked id="color-all" value="All Color">
+                            <label class="custom-control-label" for="color-all">All Color</label>
+                            <span class="badge border font-weight-normal" id="color-all-quantity"></span>
+                        </div>
+                        <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
+                            <input type="checkbox" class="custom-control-input" id="color-1" value="Black">
+                            <label class="custom-control-label" for="color-1">Black</label>
+                            <span class="badge border font-weight-normal" id="color-1-quantity"></span>
+                        </div>
+                        <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
+                            <input type="checkbox" class="custom-control-input" id="color-2" value="White">
+                            <label class="custom-control-label" for="color-2">White</label>
+                            <span class="badge border font-weight-normal" id="color-2-quantity"></span>
+                        </div>
+                        <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
+                            <input type="checkbox" class="custom-control-input" id="color-3" value="Blue">
+                            <label class="custom-control-label" for="color-3">Blue</label>
+                            <span class="badge border font-weight-normal" id="color-3-quantity"></span>
+                        </div>
+                        <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
+                            <input type="checkbox" class="custom-control-input" id="color-4" value="Gold">
+                            <label class="custom-control-label" for="color-4">Gold</label>
+                            <span class="badge border font-weight-normal" id="color-4-quantity"></span>
+                        </div>
+                        <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between">
+                            <input type="checkbox" class="custom-control-input" id="color-5" value="Green">
+                            <label class="custom-control-label" for="color-5">Green</label>
+                            <span class="badge border font-weight-normal" id="color-5-quantity"></span>
+                        </div>
+                    </form>
+                </div>
+                <!-- Color End -->
+
+                <!-- Size Start -->
+                <div class="mb-5">
+                    <h5 class="font-weight-semi-bold mb-4">Filter by size</h5>
+                    <form id="sizeFilterForm">
+                        <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
+                            <input type="checkbox" class="custom-control-input" checked id="size-all" value="All Size">
+                            <label class="custom-control-label" for="size-all">All Size</label>
+                            <span class="badge border font-weight-normal" id="size-all-quantity"></span>
+                        </div>
+                        <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
+                            <input type="checkbox" class="custom-control-input" id="size-1" value="XS">
+                            <label class="custom-control-label" for="size-1">XS</label>
+                            <span class="badge border font-weight-normal" id="size-1-quantity"></span>
+                        </div>
+                        <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
+                            <input type="checkbox" class="custom-control-input" id="size-2" value="S">
+                            <label class="custom-control-label" for="size-2">S</label>
+                            <span class="badge border font-weight-normal" id="size-2-quantity"></span>
+                        </div>
+                        <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
+                            <input type="checkbox" class="custom-control-input" id="size-3" value="M">
+                            <label class="custom-control-label" for="size-3">M</label>
+                            <span class="badge border font-weight-normal" id="size-3-quantity"></span>
+                        </div>
+                        <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
+                            <input type="checkbox" class="custom-control-input" id="size-4" value="L">
+                            <label class="custom-control-label" for="size-4">L</label>
+                            <span class="badge border font-weight-normal" id="size-4-quantity"></span>
+                        </div>
+                        <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between">
+                            <input type="checkbox" class="custom-control-input" id="size-5" value="XL">
+                            <label class="custom-control-label" for="size-5">XL</label>
+                            <span class="badge border font-weight-normal" id="size-5-quantity"></span>
+                        </div>
+                    </form>
+                </div>
+                <!-- Size End -->
+            </div>
+            <!-- Shop Sidebar End -->
+
+
+            <!-- Shop Product Start -->
+            <div class="col-lg-9 col-md-12">
+                <div class="row pb-3">
+                    <div class="col-12 pb-1">
+                        <div class="d-flex align-items-center justify-content-between mb-4">
+                            <form>
+                                <div class="input-group">
+                                    <input type="text" id="searchDressInput" class="form-control" placeholder="Search by name">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text bg-transparent text-primary">
+                                            <i class="fa fa-search"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                  
+                    <% babyProducts.forEach((product, index) => { %>
+                        <% if (index % 3 === 0) { %>
+                        </div><div class="row pb-3">
+                            <% } %>
+
+                            <div class="col-lg-4 col-md-6 col-sm-12 pb-1">
+                               <div class="card product-item border-0 mb-4" data-size="<%= product.productSize %>" data-color="<%= product.productColor %>" data-price="<%= product.productPrice %>">
+                                    <div class="card-header product-img position-relative overflow-hidden bg-transparent border p-0">
+                                        <% if (product.images && product.images.length > 0) { %>
+                                            <a href="/productDetails?productId=<%= product._id %>" 
+                                                class="product-link" onclick="openProductDetail(event)" style="cursor: pointer;">
+                                                <img class="img-fluid w-100" src="<%= product.images[0].imageUrl %>" alt="Product Image">
+                                            </a>
+                                        <% } else { %>
+                                            NA
+                                        <% } %>
+                                    </div>
+                                    <div class="card-body border-left border-right text-center p-0 pt-4 pb-3">
+                                        <h6 class="text-truncate mb-3"><%= product.productName %></h6>
+                                        <div class="d-flex justify-content-center">
+                                            <h6>$ <%= product.productPrice %></h6><h6 class="text-muted ml-2"></h6>
+                                        </div>
+                                    </div>
+                                    <div class="card-footer d-flex justify-content-between bg-light border">
+                                        <a href="#" data-toggle="modal" class="colrs" 
+                                            onclick="showProductDetails('<%= product._id %>')" data-target="#product_view">
+                                            <i class="fas fa-eye text-primary mr-1"></i>Preview
+                                        </a>
+                                        <a href="#" class="btn btn-sm text-dark p-0 addToCart" 
+                                            data-product-id="<%= product._id %>" data-url="/addToCartPage/<%= product._id %>">
+                                            <i class="fas fa-shopping-cart text-primary mr-1"></i>Add To Cart
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+
+                             <!-- No products message for search filter -->
+                             <p id="noSearchResultsMessage" style="display: none;">No products found for the search query.</p>
+                          
+                             <!-- No products message for sidebar filter -->
+                             <p id="noProductsMessage" style="display: none;">No products found for the selected filters.</p>
+                        <% }) %>
+                  
+                    
+                    <div class="col-12 pb-1">
+                        <nav aria-label="Page navigation">
+                           <div class="pagination justify-content-center mb-3">
+                                <% for (let i=1; i <=totalPages; i++) { %>
+                                    <a class="page-link" href="/babyDress?page=<%= i %>"
+                                        class="<%= currentPage === i ? 'active' : '' %>">
+                                        <%= i %>
+                                    </a>
+                                <% } %>
+                            </div>
+                        </nav>
+                    </div>
+
+                </div>
+            </div>
+            <!-- Shop Product End -->
+        </div>
+    </div>
+    <!-- Shop End -->
+
+
+    <!-- Footer Start -->
+    <%- include (`partials/footer`); -%>
+     <!-- Footer Start -->
+</body>
+
+</html>

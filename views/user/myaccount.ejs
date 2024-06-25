@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Korex StyleHub</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="Korex StyleHub" name="keywords">
+    <meta content="Korex StyleHub" name="description">
+
+    <!-- Favicon -->
+    <link href="../img/logo.PNG" rel="icon"> 
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet"> 
+
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+
+    <!-- Libraries Stylesheet -->
+    <link href="../lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="../css/style.css" rel="stylesheet">
+    <link href="../css/contactPage.css" rel="stylesheet">
+    <link href="../css/styles.css" rel="stylesheet">
+    <script src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+  <!-- Topbar Start -->
+<div class="container-fluid">
+    <div class="row bg-secondary py-2 px-xl-5">
+        <div class="col-lg-6 d-none d-lg-block">
+            <div class="d-inline-flex align-items-center">
+                <a class="text-dark mr-3" href="#">About</a>
+                <a class="text-dark mr-3" href="/user/contact">Contact</a>
+                <a class="text-dark mr-3" href="#">Help</a>
+                <a class="text-dark mr-3" href="#">FAQs</a>
+            </div>
+        </div>
+        <div class="col-lg-6 text-center text-lg-right">
+            <div class="d-inline-flex align-items-center">
+
+                <a class="text-dark px-2" href="">
+                    <i class="fab fa-facebook-f"></i>
+                </a>
+                <a class="text-dark px-2" href="">
+                    <i class="fab fa-twitter"></i>
+                </a>
+                <a class="text-dark px-2" href="">
+                    <i class="fab fa-linkedin-in"></i>
+                </a>
+                <a class="text-dark px-2" href="">
+                    <i class="fab fa-instagram"></i>
+                </a>
+                <a class="text-dark pl-2" href="">
+                    <i class="fab fa-youtube"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="row align-items-center py-3 px-xl-5">
+        <div class="col-lg-3 d-none d-lg-block">
+            <a href="/user/index" class="text-decoration-none">
+                <h1 class="m-0 display-5 font-weight-semi-bold"><span class="text-primary font-weight-bold border px-3 mr-1">K</span>STYLEHUB</h1>
+            </a>
+        </div>
+
+        <div class="col-lg-6 col-6 text-left"></div>
+        
+        <div class="col-lg-3 col-6 text-right">
+            <a href="/user/myaccount" class="btn border">
+                <i class="fas fa-user text-primary"></i>
+            </a>
+            <a href="/user/shoppingcart" class="btn border">
+                <i class="fas fa-shopping-cart text-primary" id="open-cart"></i>
+                <span  id="productsInCart" class="badge">0</span>
+            </a>
+        </div>
+    </div>
+</div>
+<!-- Topbar End -->
+
+<section class="my-5">
+    <div class="container">
+        <div class="main-body">
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex flex-column align-items-center text-center">
+                                <div class="position-relative">
+                                    <label for="profile-picture-input">
+                                        <% if (user && user.image && user.image.length > 0) { %>
+                                             <img class="rounded-circle p-1 bg-warning" src="<%= user.image[0].imageUrl %>" alt="image" width="100" height="100"> 
+                                        <% } else { %>
+                    
+                                            <div style="position: relative; cursor: pointer;">
+                                                <img class="rounded-circle p-1 bg-warning" src="https://bootdey.com/img/Content/avatar/avatar5.png" alt="image" width="90" height="90"> 
+                                            </div>
+                                        <% } %>
+                                    </label>
+                                    <input type="file" name="image" id="profile-picture-input" style="display: none; cursor: pointer;" data-url="/user/uploadUserImage">
+                                </div>
+
+                                <div class="mt-3">
+                                    <h4><%= user.userFirstName %> <%= user.userLastName %></h4>
+                                    <p class="text-secondary mb-1 color1"><%= user.userNumber %></p>
+                                    <p class="text-muted font-size-sm"><%= user.userCity %> <%= user.userState %></p>
+                                    <p class="text-muted font-size-sm color3"><a href="/user/index">Dashboard</a></p>
+                                </div>
+                            </div>
+                            <hr>
+
+                            <div class="list-group list-group-flush text-center mt-4 color2">
+                                <a href="#" class="list-group-item list-group-item-action border-0 active" onclick="showProfileDetails()">
+                                    Profile Informaton
+                                </a>
+                                <a href="#" class="list-group-item list-group-item-action border-0" onclick="showOrderDetails()">
+                                    Orders
+                                </a>     
+                                <a href="#" class="list-group-item list-group-item-action border-0 " onclick="showChatting()">
+                                     Chat Admin
+                                </a>
+                                <a href="#" class="list-group-item list-group-item-action border-0 " onclick="showReportSeller()">
+                                    Report Seller
+                               </a>
+                                <a class="list-group-item list-group-item-action border-0 signOutLink"  onclick="showLogout()" style="cursor: pointer;" data-url="/user/logoutUser">Logout</a>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-8">
+
+                     <!-- Edit profile start -->
+                    <div id="profileDetails" class="card" style="display: none;">
+                        <div class="card-body">
+                            <div class="profile-info">
+                                <h5>Profile Information</h5> 
+                                <p><strong>Name:</strong> <%= user.userFirstName %> <%= user.userLastName %></p>
+                                <p><strong>Email Address:</strong> <%= user.userEmail %></p>
+                                <p><strong>Username:</strong> <%= user.userUsername %></p>
+                                <p><strong>Contact:</strong> <%= user.userNumber %></p>
+                                <%
+                                const date = user.userDob instanceof Date ? user.userDob : new Date(user.userDob);
+                                const day = String(date.getDate()).padStart(2, '0');
+                                const month = String(date.getMonth() + 1).padStart(2, '0');
+                                const year = date.getFullYear();
+                                const formattedDob = `${day}-${month}-${year}`;
+                                %>
+                                <p><strong>Date of Birth:</strong> <%= formattedDob %></p>
+                                <p><strong>Address:</strong> <%= user.userAddress %></p>
+                                <p><strong>City:</strong> <%= user.userCity %></p>
+                                <p><strong>State:</strong> <%= user.userState %></p>
+                                <p><strong>Country:</strong> <%= user.userCountry %></p>
+                                <p><strong>Role:</strong> <%= user.userRole %></p>
+                            </div>
+                            <button class="add_address_button" onclick="showAddProfileDetailsModal()">Change Info</button>
+                        </div>
+                    </div>
+                    <div id="addProfileDetailsModal" class="modal">
+                        <div class="modal-content">
+                            <span class="close" onclick="closeAddProfileDetailsModal()">&times;</span>
+                            <h2>Edit Profile</h2>
+                            <form id="EditProfileForm" method="post" action="/user/editProfilePage">
+                    
+                                <div class="col-12 d-flex main_flex_div">
+                                    <div class="col-4 d-flex flex-column inner_flex_div">
+                                        <label for="name">First Name:</label>
+                                        <input type="text" id="userFirstName" name="userFirstName" value="<%= user.userFirstName %>"><br>
+                                    </div>
+                                    <div class="col-4 d-flex flex-column inner_flex_div">
+                                        <label for="name">Last Name:</label>
+                                        <input type="text" id="userLastName" name="userLastName" value="<%= user.userLastName %>">
+                                    </div>
+                                    <div class="col-4 d-flex flex-column inner_flex_div">
+                                        <label for="Email">Email:</label>
+                                        <input type="text" id="userEmail" name="userEmail" value="<%= user.userEmail %>">
+                                    </div>
+                                </div>
+                    
+                                <div class="col-12 d-flex main_flex_div">
+                                    <div class="col-4 d-flex flex-column inner_flex_div">
+                                        <label for="Username">Username:</label>
+                                        <input type="text" id="userUsername" name="userUsername" value="<%= user.userUsername %>"><br>
+        
+                                    </div>
+                                    <div class="col-4 d-flex flex-column inner_flex_div">
+                                        <label for="Mobile">Mobile No:</label>
+                                        <input type="text" id="userNumber" name="userNumber" value="<%= user.userNumber %>"><br>
+                                    </div>
+                                    <div class="col-4 d-flex flex-column inner_flex_div">
+                                        <label for="userDob">Date of Birth:</label>
+                                        <input type="date" id="userDob" name="userDob" value="<%= formattedDob %>"><br>
+        
+                                    </div>
+                                </div>
+                    
+                                <div class="col-12 d-flex main_flex_div">
+                                    <div class="col-12 d-flex flex-column inner_flex_div">
+                                        <label for="address">Address:</label>
+                                        <textarea id="userAddress" name="userAddress"><%= user.userAddress %></textarea>
+                                    </div>
+                                </div>
+
+                                <div class="col-12 d-flex main_flex_div">
+                                    <div class="col-4 d-flex flex-column inner_flex_div">
+                                        <label for="City">City:</label>
+                                        <input type="text" name="userCity" id="userCity" value="<%= user.userCity %>"><br>
+                                    </div>
+                                    <div class="col-4 d-flex flex-column inner_flex_div">
+                                        <label for="State">State:</label>
+                                        <input type="text" name="userState" id="userState" value="<%= user.userState %>"><br>
+                                    </div>
+                                    <div class="col-4 d-flex flex-column inner_flex_div">
+                                        <label for="Country">Country:</label>
+                                        <input type="text" id="userCountry" name="userCountry" value="<%= user.userCountry %>"><br>
+        
+                                    </div>
+                                </div>
+                    
+                                <div class="col-12 d-flex button_div">
+                                    <button type="submit">Submit</button>
+                                    <button type="button" onclick="closeAddProfileDetailsModal()">Cancel</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <script>
+                        function showAddProfileDetailsModal() {
+                            const modal = document.getElementById('addProfileDetailsModal');
+                            modal.style.display = 'block';
+                            isFormVisible = true;
+                        }
+        
+                        function closeAddProfileDetailsModal() {
+                            const modal = document.getElementById('addProfileDetailsModal');
+                            modal.style.display = 'none';
+                            isFormVisible = false;
+                        }
+                    </script>
+                    <!-- Edit profile End -->
+
+                     <!-- Order information start -->
+                    <div id="orderDetails" class="order_card">
+                        <div class="bg-light text-center rounded p-4">
+                            <div class="card">
+                                <div class="align-items-center justify-content-between mb-4">
+                                    <!-- <h6 class="mb-0">ORDERS</h6> -->
+                                    <div class="tab">
+                                        <a class="tablinks" onclick="openCity(event, 'All')" id="defaultOpen">All</a>
+                                        <a class="tablinks" onclick="openCity(event, 'To Ship')">To Ship</a>
+                                        <a class="tablinks" onclick="openCity(event, 'Shipped')">Shipped</a>
+                                        <a class="tablinks" onclick="openCity(event, 'Completed')">Completed</a>
+                                        <a class="tablinks" onclick="openCity(event, 'Cancelled')">Cancelled</a>
+                                    </div>
+                                    <!-- OPEN MODEL END  -->
+                                </div>
+                        
+                                 <!-- START DISPLAYING ALL PRODUCT INFORMATION -->
+                                <div id="All" class="tabcontent">
+                                    <div class="table-responsive">
+                                        <table class="table text-start align-middle table-bordered table-hover mb-0">
+                                            <thead>
+                                                <tr class="text-dark">
+                                                    <th scope="col">Product Images</th>
+                                                    <th scope="col">Order Number</th>
+                                                    <th scope="col">Payment Reference</th>
+                                                    <th scope="col">Payment Status</th>
+                                                    <th scope="col">Purchase Date</th>
+                                                    <th scope="col" style="text-align: center;">Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="productTableBody">
+                                                <% if (results.length > 0) { %>
+                                                    <% results.forEach(order => { %>
+                                                        <% const firstItem = order.cartItems[0]; %>
+                                                        <tr class="center">
+                                                            <td>
+                                                                <% if (firstItem.productImages && firstItem.productImages.length > 0) { %>
+                                                                    <img src="<%= firstItem.productImages[0] %>" alt="Image" style="width: 50px;">
+                                                                <% } else { %>
+                                                                    NA
+                                                                <% } %>                                                        
+                                                            </td>                                        
+                                                            <td><%= order.orderNumber %></td>
+                                                            <td><%= order.paystack_ref %></td>
+                                                            <td><%= order.paymentStatus %></td>
+                                                            <%
+                                                            const date = order.date_added instanceof Date ? order.date_added : new Date(order.date_added);
+                                                            const day = String(date.getDate()).padStart(2, '0');
+                                                            const month = String(date.getMonth() + 1).padStart(2, '0');
+                                                            const year = date.getFullYear();
+                                                            const dateAdded = `${day}-${month}-${year}`;
+                                                            %>
+                                                            <td><%= dateAdded %></td>
+                                                            <td data-label="Profile"> 
+                                                                <input type="button" value="View" class="btn btn-primary btn-sm view-button btnBorder rstBtnWidth" data-order-number="<%= order.orderNumber %>"  onclick="showViewProductModal(this)">
+                                                            </td>
+                                                   
+                                                        </tr>
+                                                    <% }); %>
+                                                <% } else { %>
+                                                    <tr>
+                                                        <td colspan="6" class="text-center">You are yet to have Order with KorexStyleHub</td>
+                                                    </tr>
+                                                <% } %>
+                                            </tbody>
+                                        </table>
+                                        <div class="pagination">
+                                            <% for (let i=1; i <=totalPages; i++) { %>
+                                                <a href="/user/myaccount?page=<%= i %>" style="background-color:#D19C97 !important;"
+                                                    class="<%= currentPage === i ? 'active' : '' %>">
+                                                    <%= i %>
+                                                </a>
+                                            <% } %>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- END DISPLAYING ALL PRODUCT INFORMATION -->
+                                
+                    
+                                <!-- START VIEW PRODUCT INFORMATION -->         
+                                <div id="viewProductModal" class="modal">
+                                    <div style="height: 500px; overflow-y: auto;">
+                                        <div class="modal-content ">
+                                            <span class="close" style="cursor: pointer;" onclick="closeViewProductModal()">&times;</span>
+                                            <div class="card mt-4">
+                                                <div class="card-body p-0 table-responsive">
+                                                    <h4 class="p-3 mb-0">Order Product Description</h4>
+                                                    <table class="table mb-0">
+                                                        <thead>
+                                                            <tr>
+                                                                <th scope="col">Image</th>
+                                                                <th scope="col">Description</th>
+                                                                <th scope="col">Quantity</th>
+                                                                <th scope="col">Color</th>
+                                                                <th scope="col">Size</th>
+                                                                <th scope="col">Amount</th>
+                                                                <th scope="col">Reference</th>
+                                                                <th scope="col">Status</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody id="modalTableBody">
+                                                                  <!-- dynamically create the HTML for the modal form elements after fetching the product details -->
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <script>
+                                    function showViewProductModal(button) {
+                                        const orderNumber = button.getAttribute('data-order-number');
+                        
+                                        fetch(`/orders/${orderNumber}`)
+                                            .then(response => {
+                                                if (!response.ok) {
+                                                    throw new Error('Network response was not ok');
+                                                }
+                                                return response.json();
+                                            })
+                                            .then(data => {
+                                                if (data.success) {
+                                                    const order = data.orders[0];
+                                                    const modalTableBody = document.getElementById('modalTableBody');
+                                
+                                                    let tableRows = '';
+                                
+                                                    order.cartItems.forEach(item => {
+                                                        tableRows += `
+                                                            <tr>
+                                                                <td>
+                                                                    <img src="${item.productImages && item.productImages.length > 0 ? item.productImages[0] : 'NA'}"
+                                                                        alt="product" width="80">
+                                                                </td>
+                                                                <td>${item.productName || 'N/A'}</td>
+                                                                <td>${item.productQuantity}</td>
+                                                                <td>${item.productColor}</td>
+                                                                <td>${item.productSize}</td>
+                                                                <td><strong>${item.productPrice}</strong></td>
+                                                                <td>${order.paystack_ref}</td>
+                                                                <td><span class="badge ${order.paymentStatus === 'PAID' ? 'badge-success' : 'badge-warning'}">${order.paymentStatus}</span></td>
+                                                                
+                                                            </tr>`;
+                                                    });
+
+                                                    // Add a summary row
+                                                    tableRows += `
+                                                        <tr>
+                                                            <td colspan="2">
+                                                                <span>Shipment Status:</span>
+                                                                <span class="badge ${order.shipmentStatus ? 'badge-success' : 'badge-warning'}">${order.shipmentStatus}</span>
+                                                            </td>
+                                                            <td>
+                                                                <span class="text-muted">Subtotal</span>
+                                                                <strong>$${order.subtotal}</strong>
+                                                            </td>
+                                                            <td>
+                                                                <span class="text-muted">Shipping</span>
+                                                                <strong>$${order.totalShipping}</strong>
+                                                            </td>
+                                                            <td>
+                                                                <span class="text-muted">Total Price</span>
+                                                                <strong>$${order.totalAmount}</strong>
+                                                            </td>
+                                                        </tr>`;
+
+                                                            // Add shipping and billing address row
+                                                        tableRows += `
+                                                        <tr>
+                                                            <td colspan="6">
+                                                                <div class="address-container">
+                                                                    <div class="address-section">
+                                                                        <h5>DELIVERY ADDRESS</h5>
+                                                                        <p>
+                                                                            ${order.shippingAddress.firstName} ${order.shippingAddress.lastName}<br>
+                                                                            ${order.shippingAddress.addressLine1}<br>
+                                                                            ${order.shippingAddress.city}, ${order.shippingAddress.state}, ${order.shippingAddress.country}<br>
+                                                                            ${order.shippingAddress.email}<br>
+                                                                            ${order.shippingAddress.mobileNumber}
+                                                                        </p>
+                                                                    </div>
+                                                                    <div class="address-section">
+                                                                        <h5>BILLING ADDRESS</h5>
+                                                                        <p>
+                                                                            ${order.user.userFirstName} ${order.user.userLastName}<br>
+                                                                            ${order.user.userAddress}<br>
+                                                                            ${order.user.userCity}, ${order.user.userState}, ${order.user.userCountry}
+                                                                            <br>
+                                                                            ${order.user.userEmail}<br>
+                                                                            ${order.user.userNumber}
+                                                                        </p>
+                                                                    </div>
+                                                                </div>
+                                                            </td>
+                                                        </tr>`;
+
+                                                    modalTableBody.innerHTML = tableRows;
+                                
+                                                    const modal = document.getElementById('viewProductModal');
+                                                    modal.style.display = 'block';
+                                                } else {
+                                                    alert('Order details not found');
+                                                }
+                                            })
+                                            .catch(error => {
+                                                console.error('Error fetching order details:', error);
+                                                alert('An error occurred while fetching order details.');
+                                            });
+                                    }
+                                
+                                    function closeViewProductModal() {
+                                        const modal = document.getElementById('viewProductModal');
+                                        modal.style.display = 'none';
+                                    }
+                                </script>
+                                <!-- END VIEW PRODUCT INFORMATION -->
+    
+    
+                                <!-- START PRODUCT Processing -->
+                                <div id="To Ship" class="tabcontent">
+                                    <h3>Processing</h3>
+                                    <div class="table-responsive">
+                                        <table class="table text-start align-middle table-bordered table-hover mb-0">
+                                            <thead>
+                                                <tr class="text-dark">
+                                                    <th scope="col">Product Images</th>
+                                                    <th scope="col">Order Number</th>
+                                                    <th scope="col">Payment Reference</th>
+                                                    <th scope="col">Payment Status</th>
+                                                    <th scope="col">Purchase Date</th>
+                                                    <th scope="col" style="text-align: center;">Action</
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <% if (results.length > 0) { %>
+                                                    <% const processingOrders = results.filter(order => order.shipmentStatus === 'Processing'); %>
+                                                    <% if (processingOrders.length > 0) { %>
+                                                        <% processingOrders.forEach(order => { %>
+                                                            <% const firstItem = order.cartItems[0]; %>
+                                                            <tr class="center">
+                                                                <td>
+                                                                    <% if (firstItem.productImages && firstItem.productImages.length > 0) { %>
+                                                                        <img src="<%= firstItem.productImages[0] %>" alt="Image" style="width: 50px;">
+                                                                    <% } else { %>
+                                                                        NA
+                                                                    <% } %>                                                        
+                                                                </td>                                        
+                                                                <td><%= order.orderNumber %></td>
+                                                                <td><%= order.paystack_ref %></td>
+                                                                <td><%= order.paymentStatus %></td>
+                                                                <%
+                                                                const date = order.date_added instanceof Date ? order.date_added : new Date(order.date_added);
+                                                                const day = String(date.getDate()).padStart(2, '0');
+                                                                const month = String(date.getMonth() + 1).padStart(2, '0');
+                                                                const year = date.getFullYear();
+                                                                const dateAdded = `${day}-${month}-${year}`;
+                                                                %>
+                                                                <td><%= dateAdded %></td>
+                                                                <td data-label="Profile"> 
+                                                                    <input type="button" value="View" class="btn btn-primary btn-sm view-button btnBorder rstBtnWidth" data-order-number="<%= order.orderNumber %>" onclick="showViewProductModal(this)">
+                                                                </td>
+                                                            </tr>
+                                                        <% }); %>
+                                                    <% } else { %>
+                                                        <tr>
+                                                            <td colspan="6">No processing orders found.</td>
+                                                        </tr>
+                                                    <% } %>
+                                                <% } else { %>
+                                                    <tr>
+                                                        <td colspan="6">No orders found.</td>
+                                                    </tr>
+                                                <% } %>                                                
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <!-- END PRODUCT Processing -->
+                        
+                                <!-- START PRODUCT Shipped -->
+                                <div id="Shipped" class="tabcontent">
+                                    <h3>Shipped</h3>
+                                    <div class="table-responsive">
+                                        <table class="table text-start align-middle table-bordered table-hover mb-0">
+                                            <thead>
+                                                <tr class="text-dark">
+                                                    <th scope="col">Product Images</th>
+                                                    <th scope="col">Order Number</th>
+                                                    <th scope="col">Payment Reference</th>
+                                                    <th scope="col">Payment Status</th>
+                                                    <th scope="col">Purchase Date</th>
+                                                    <th scope="col" style="text-align: center;">Action</
+                                                </tr>
+                                            </thead>
+                                            <tbody >
+                                                <% if (results.length > 0) { %>
+                                                    <% const processingOrders = results.filter(order => order.shipmentStatus === 'Shipped'); %>
+                                                    <% if (processingOrders.length > 0) { %>
+                                                        <% processingOrders.forEach(order => { %>
+                                                            <% const firstItem = order.cartItems[0]; %>
+                                                            <tr class="center">
+                                                                <td>
+                                                                    <% if (firstItem.productImages && firstItem.productImages.length > 0) { %>
+                                                                        <img src="<%= firstItem.productImages[0] %>" alt="Image" style="width: 50px;">
+                                                                    <% } else { %>
+                                                                        NA
+                                                                    <% } %>                                                        
+                                                                </td>                                        
+                                                                <td><%= order.orderNumber %></td>
+                                                                <td><%= order.paystack_ref %></td>
+                                                                <td><%= order.paymentStatus %></td>
+                                                                <%
+                                                                const date = order.date_added instanceof Date ? order.date_added : new Date(order.date_added);
+                                                                const day = String(date.getDate()).padStart(2, '0');
+                                                                const month = String(date.getMonth() + 1).padStart(2, '0');
+                                                                const year = date.getFullYear();
+                                                                const dateAdded = `${day}-${month}-${year}`;
+                                                                %>
+                                                                <td><%= dateAdded %></td>
+                                                                <td data-label="Profile"> 
+                                                                    <input type="button" value="View" class="btn btn-primary btn-sm view-button btnBorder rstBtnWidth" data-order-number="<%= order.orderNumber %>" onclick="showViewProductModal(this)">
+                                                                </td>
+                                                            </tr>
+                                                        <% }); %>
+                                                    <% } else { %>
+                                                        <tr>
+                                                            <td colspan="6">No shipped orders found.</td>
+                                                        </tr>
+                                                    <% } %>
+                                                <% } else { %>
+                                                    <tr>
+                                                        <td colspan="6">No orders found.</td>
+                                                    </tr>
+                                                <% } %>        
+                                            </tbody>
+                                        </table>
+                                        <div class="pagination">
+                                         
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- END PRODUCT Shipped -->
+                        
+                                <!-- START PRODUCT Completed -->
+                                <div id="Completed" class="tabcontent">
+                                    <h3>Completed</h3>
+                                    <div class="table-responsive">
+                                        <table class="table text-start align-middle table-bordered table-hover mb-0">
+                                            <thead>
+                                                <tr class="text-dark">
+                                                    <th scope="col">Product Images</th>
+                                                    <th scope="col">Order Number</th>
+                                                    <th scope="col">Payment Reference</th>
+                                                    <th scope="col">Payment Status</th>
+                                                    <th scope="col">Purchase Date</th>
+                                                    <th scope="col" style="text-align: center;">Action</
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <% if (results.length > 0) { %>
+                                                    <% const processingOrders = results.filter(order => order.shipmentStatus === 'Complete'); %>
+                                                    <% if (processingOrders.length > 0) { %>
+                                                        <% processingOrders.forEach(order => { %>
+                                                            <% const firstItem = order.cartItems[0]; %>
+                                                            <tr class="center">
+                                                                <td>
+                                                                    <% if (firstItem.productImages && firstItem.productImages.length > 0) { %>
+                                                                        <img src="<%= firstItem.productImages[0] %>" alt="Image" style="width: 50px;">
+                                                                    <% } else { %>
+                                                                        NA
+                                                                    <% } %>                                                        
+                                                                </td>                                        
+                                                                <td><%= order.orderNumber %></td>
+                                                                <td><%= order.paystack_ref %></td>
+                                                                <td><%= order.paymentStatus %></td>
+                                                                <%
+                                                                const date = order.date_added instanceof Date ? order.date_added : new Date(order.date_added);
+                                                                const day = String(date.getDate()).padStart(2, '0');
+                                                                const month = String(date.getMonth() + 1).padStart(2, '0');
+                                                                const year = date.getFullYear();
+                                                                const dateAdded = `${day}-${month}-${year}`;
+                                                                %>
+                                                                <td><%= dateAdded %></td>
+                                                                <td data-label="Profile"> 
+                                                                    <input type="button" value="View" class="btn btn-primary btn-sm view-button btnBorder rstBtnWidth" data-order-number="<%= order.orderNumber %>" onclick="showViewProductModal(this)">
+                                                                </td>
+                                                            </tr>
+                                                        <% }); %>
+                                                    <% } else { %>
+                                                        <tr>
+                                                            <td colspan="6">No complete orders found.</td>
+                                                        </tr>
+                                                    <% } %>
+                                                <% } else { %>
+                                                    <tr>
+                                                        <td colspan="6">No orders found.</td>
+                                                    </tr>
+                                                <% } %>   
+                                              
+                                            </tbody>
+                                        </table>
+                                        <div class="pagination">
+                                          
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- END PRODUCT Completed -->
+
+                                  <!-- START PRODUCT Cancelled -->
+                                <div id="Cancelled" class="tabcontent">
+                                    <h3>Completed</h3>
+                                    <div class="table-responsive">
+                                        <table class="table text-start align-middle table-bordered table-hover mb-0">
+                                            <thead>
+                                                <tr class="text-dark">
+                                                    <th scope="col">Product Images</th>
+                                                    <th scope="col">Order Number</th>
+                                                    <th scope="col">Payment Reference</th>
+                                                    <th scope="col">Payment Status</th>
+                                                    <th scope="col">Purchase Date</th>
+                                                    <th scope="col" style="text-align: center;">Action</
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <% if (results.length > 0) { %>
+                                                    <% const processingOrders = results.filter(order => order.shipmentStatus === 'Cancelled'); %>
+                                                    <% if (processingOrders.length > 0) { %>
+                                                        <% processingOrders.forEach(order => { %>
+                                                            <% const firstItem = order.cartItems[0]; %>
+                                                            <tr class="center">
+                                                                <td>
+                                                                    <% if (firstItem.productImages && firstItem.productImages.length > 0) { %>
+                                                                        <img src="<%= firstItem.productImages[0] %>" alt="Image" style="width: 50px;">
+                                                                    <% } else { %>
+                                                                        NA
+                                                                    <% } %>                                                        
+                                                                </td>                                        
+                                                                <td><%= order.orderNumber %></td>
+                                                                <td><%= order.paystack_ref %></td>
+                                                                <td><%= order.paymentStatus %></td>
+                                                                <%
+                                                                const date = order.date_added instanceof Date ? order.date_added : new Date(order.date_added);
+                                                                const day = String(date.getDate()).padStart(2, '0');
+                                                                const month = String(date.getMonth() + 1).padStart(2, '0');
+                                                                const year = date.getFullYear();
+                                                                const dateAdded = `${day}-${month}-${year}`;
+                                                                %>
+                                                                <td><%= dateAdded %></td>
+                                                                <td data-label="Profile"> 
+                                                                    <input type="button" value="View" class="btn btn-primary btn-sm view-button btnBorder rstBtnWidth" data-order-number="<%= order.orderNumber %>" onclick="showViewProductModal(this)">
+                                                                </td>
+                                                            </tr>
+                                                        <% }); %>
+                                                    <% } else { %>
+                                                        <tr>
+                                                            <td colspan="6">No cancelled orders found.</td>
+                                                        </tr>
+                                                    <% } %>
+                                                <% } else { %>
+                                                    <tr>
+                                                        <td colspan="6">No orders found.</td>
+                                                    </tr>
+                                                <% } %>   
+                                              
+                                            </tbody>
+                                        </table>
+                                        <div class="pagination">
+                                          
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- END PRODUCT Cancelled -->
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Order information end -->
+                                
+                     <!-- Start chatting with admin      -->
+                    <div id="chattingBook" class="card" style="display: none;">
+                        <div class="card-body">
+                            <h5>Chat With Admin</h5>
+                            <div class="conversation-wrapper">
+                                <div class="conversation-content">
+                                    <div class="slimScrollDiv" 
+                                        style="position: relative;overflow-y : scroll; overflow-x : hidden; width: auto;height: 340px;">
+                                        <div class="conversation-inner" style="overflow: hidden; width: auto;">
+
+                                            <div id="user-chat-messages" class="chat-messages pb-4">
+                                                <!-- Chat messages will be inserted here dynamically -->
+                                                
+                                            </div>
+                                            
+                                        
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="typing-indicator">
+                                    <small class="text-muted"><em></em></small>
+                                </div>
+                                <div id="user-image-preview" class="mb-2"></div>
+                                <div class="flex-grow-0 py-3 px-4 border-top">
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <textarea class="form-control" rows="2" id="user-message" placeholder="Enter your message..."></textarea>
+                                        </div>
+                                        <div class="col-12 mt-2">
+                                            <div class="input-group">
+                                                <label for="user-image-upload" class="btn btn-primary mr-2">
+                                                    <i class="fas fa-camera"></i> Upload Image
+                                                </label>
+                                                <input type="file" id="user-image-upload" class="d-none" name="fileInput">
+                                                <button class="btn btn-primary" onclick="sendUserMessage()">Send</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End chatting with admin      -->
+
+                    <!-- start report seller  -->
+                    <div id="reportingSeller" class="card" style="display: none;">
+                        <div class="testbox">
+                            <form id="reportSellerForm" action="/user/reportSeller" method="post" enctype="multipart/form-data">
+                                <h5>Restricted or Prohibited Products</h5>
+                                <div class="item">
+                                    <div class="item">
+                                        <label>Product url</label>
+                                        <input type="text" name="productUrl"/>
+                                        <div id="productUrlError" class="error"></div>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <label>Report good type</label>
+                                    <input type="text" name="reportGoodsType"/>
+                                    <div id="reportGoodsTypeError" class="error"></div>
+                                </div>
+                            
+                                <h5>Information about your complaint</h5>
+                                <div class="item">
+                                    <label>Reason for Reporting</label>
+                                    <textarea rows="5" maxlength="250" name="reasonForReport" placeholder="Please enter your message"></textarea>
+                                    <div id="reasonForReportError" class="error"></div>
+                                </div>
+                                <div class="item">
+                                    <label>Upload Proof</label>
+                                    <input type="file" name="image">
+                                    <div id="ImageError" class="error"></div>
+                                </div>
+                              <div class="btn-block">
+                                <button id="sendReportBton" type="submit" class="add_address_button">Submit</button>
+                              </div>
+                            </form>
+                            <div id="thankYouMsg" style="display: none;">
+                                Thank you, your message has been sent. A member of our team will get back to you shortly.
+                            </div>
+                        </div>    
+                    </div>
+                    <!-- end report seller  -->
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+       
+     
+                
+                  <script>
+                     
+                function showProfileDetails() {
+                    hideAllSections();
+                    document.getElementById('profileDetails').style.display = 'block';
+                    setActiveLink(0);
+                }
+        
+                function showOrderDetails() {
+                    hideAllSections();
+                    document.getElementById('orderDetails').style.display = 'block';
+                    setActiveLink(1);
+                }
+        
+                function showChatting() {
+                    hideAllSections();
+                    document.getElementById('chattingBook').style.display = 'block';
+                    setActiveLink(2);
+                }
+
+                function showReportSeller() {
+                    hideAllSections();
+                    document.getElementById('reportingSeller').style.display = 'block';
+                    setActiveLink(3);
+                }
+           
+                function hideAllSections() {
+                    document.getElementById('orderDetails').style.display = 'none';
+                    document.getElementById('profileDetails').style.display = 'none';
+                    document.getElementById('chattingBook').style.display = 'none';
+                    document.getElementById('reportingSeller').style.display = 'none';
+                }
+        
+                function setActiveLink(index) {
+                    document.querySelector('.list-group-item.active').classList.remove('active');
+                    document.querySelectorAll('.list-group-item')[index].classList.add('active');
+                }
+        
+                showProfileDetails();
+            </script>
+   
+
+
+
+    <!-- Footer Start -->
+         <%- include (`../partials/userFooter`); -%>
+    <!-- Footer End -->
+   
+
+
+</body>
+
+</html>

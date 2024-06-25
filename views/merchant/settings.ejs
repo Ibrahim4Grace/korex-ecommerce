@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Korex StyleHub</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="Korex StyleHub" name="keywords">
+    <meta content="Korex StyleHub" name="description">
+
+      <!-- Favicon -->
+      <link href="../img/logo.PNG" rel="icon"> 
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Icon Font Stylesheet -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Libraries Stylesheet -->
+    <link href="../lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+    <link href="../lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css" rel="stylesheet" />
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="../css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Template Stylesheet -->
+    <link href="../css/styles.css" rel="stylesheet">
+    <link href="../css/adminform.css" rel="stylesheet">
+</head>
+
+<body>
+
+     
+
+    <div class="container-xxl position-relative bg-white d-flex p-0">
+       
+        <!-- Navbar Start -->
+     <%- include (`../partials/merchantHeader`); -%>
+     <!-- Navbar End -->
+
+            <!-- Recent Sales Start -->
+            <div class="container-fluid pt-4 px-4">
+                <div class="bg-light text-center rounded p-4">
+                    <div class="d-flex align-items-center justify-content-between mb-4">
+                        <h6 class="mb-0">Edit Profile</h6>
+                    </div>
+                    <div class="container">
+                        <form id="EditProfileForm" action="/merchant/editProfilePage" method="post">
+                            <div class="grid">
+                                <div class="form-group a">
+                                    <label for="name">First Name</label>
+                                    <input name="merchantFirstName" class="centerText" type="text" value="<%= merchant.merchantFirstName%>">
+                                </div>
+                        
+                                <div class="form-group b">
+                                    <label for="first-name">Last Name</label>
+                                    <input name="merchantLastName"  class="centerText" type="text" value="<%= merchant.merchantLastName%>">
+                                </div>
+    
+                                <div class="form-group email-group">
+                                    <label for="email">Email</label>
+                                    <input name="merchantEmail" class="centerText" type="email" value="<%= merchant.merchantEmail%>">
+                                </div>
+    
+                                <div class="form-group phone-group">
+                                    <label for="phone">Contact No</label>
+                                    <input name="merchantPhone" class="centerText" type="text" value="<%= merchant.merchantPhone%>">
+                                </div>
+    
+                                <div class="form-group b">
+                                    <label for="first-name">Username</label>
+                                    <input name="merchantUsername" class="centerText" type="text" value="<%= merchant.merchantUsername%>">
+                                </div>
+    
+                                <div class="form-group">
+                                    <label for="address">Adress</label>
+                                    <input name="merchantAddress" class="centerText" type="text" value="<%= merchant.merchantAddress%>">
+                                </div>
+                        
+                                <div class="form-group">
+                                    <label for="city">City</label>
+                                    <input name="merchantCity" class="centerText" type="text" value="<%= merchant.merchantCity%>">
+                                </div>
+                        
+                                <div class="form-group">
+                                    <label for="state">State</label>
+                                    <input name="merchantState" class="centerText" type="text" value="<%= merchant.merchantState%>" >
+                                </div>
+    
+                                <div class="form-group">
+                                    <label for="country">Country</label>
+                                    <input name="merchantCountry" class="centerText" type="text" value="<%= merchant.merchantCountry%>">
+                                </div>
+    
+                                <div class="form-group">
+                                    <label for="old-password">Old Password</label>
+                                    <input id="old-password" name="merchantOldPassword" class="centerText" type="password" value="">
+                                </div>
+    
+                                <div class="form-group">
+                                    <label for="new-password">New Password</label>
+                                    <input id="new-password" name="merchantNewPassword" class="centerText" type="password" value="">
+                                </div>
+                            </div>
+                        
+                            <div class="button-container">
+                                <button  id="submit_btn" class="btn btn-primary" name="submit">Save Changes</button>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <!-- Recent Sales End -->
+
+
+     <!-- Footer Start -->
+     <%- include (`../partials/merchantFooter`); -%>
+     <!-- Footer End -->
+</body>
+
+</html>

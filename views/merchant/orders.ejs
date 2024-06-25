@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Korex StyleHub</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="Korex StyleHub" name="keywords">
+    <meta content="Korex StyleHub" name="description">
+
+      <!-- Favicon -->
+      <link href="../img/logo.PNG" rel="icon"> 
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Icon Font Stylesheet -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Libraries Stylesheet -->
+    <link href="../lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+    <link href="../lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css" rel="stylesheet" />
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="../css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Template Stylesheet -->
+    <link href="../css/styles.css" rel="stylesheet">
+</head>
+
+<body>
+
+     
+
+    <div class="container-xxl position-relative bg-white d-flex p-0">
+       
+        <!-- Navbar Start -->
+     <%- include (`../partials/merchantHeader`); -%>
+     <!-- Navbar End -->
+
+            <!-- Recent Sales Start -->
+            <div class="container-fluid pt-4 px-4">
+                <div class="bg-light text-center rounded p-4">
+                    <div class="d-flex align-items-center justify-content-between mb-4">
+                        <h6 class="mb-0">Orders</h6>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table text-start align-middle table-bordered table-hover mb-0">
+                            <thead>
+                                <tr class="text-dark">
+                                    <th scope="col"><input class="form-check-input" type="checkbox"></th>
+                                    <th scope="col">Order Image</th>
+                                    <th scope="col" style="text-align: center;">Order ID</th>
+                                    <th scope="col">Payment Ref</th>
+                                    <th scope="col">Payment</th>
+                                    <th scope="col">Purchase Date</th>
+                                    <th scope="col">Price</th>
+                                    <th scope="col" style="text-align: center;">Status</th>
+                                    <th scope="col">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% if (UserOrder.length > 0) { %>
+                                    <% UserOrder.forEach(order => { %>
+                                        <% const firstItem = order.cartItems[0]; %>
+                                        <tr class="center">
+                                            <td><input class="form-check-input" type="checkbox"></td>
+                                            <td>
+                                                <% if (firstItem.productImages && firstItem.productImages.length > 0) { %>
+                                                    <img src="<%= firstItem.productImages[0] %>" alt="Image" style="width: 50px;">
+                                                <% } else { %>
+                                                    NA
+                                                <% } %>                                                        
+                                            </td>                                        
+                                            <td><%= order.orderNumber %></td>
+                                            <td><%= order.paystack_ref %></td>
+                                            <td><%= order.paymentStatus %></td>
+                                            <%
+                                            const date = order.date_added instanceof Date ? order.date_added : new Date(order.date_added);
+                                            const day = String(date.getDate()).padStart(2, '0');
+                                            const month = String(date.getMonth() + 1).padStart(2, '0');
+                                            const year = date.getFullYear();
+                                            const dateAdded = `${day}-${month}-${year}`;
+                                            %>
+                                            <td><%= dateAdded %></td>
+                                            <td>$<%= order.totalAmount %></td>
+                                            <td>
+                                                <select class="form-select shipment-status-select" data-order-id="<%= order._id %>">
+                                                    <option value="Processing" <%= order.shipmentStatus === 'Processing' ? 'selected' : '' %>>Processing</option>
+                                                    <option value="Shipped" <%= order.shipmentStatus === 'Shipped' ? 'selected' : '' %>>Shipped</option>
+                                                    <option value="Complete" <%= order.shipmentStatus === 'Complete' ? 'selected' : '' %>>Complete</option>
+                                                    <option value="Cancelled" <%= order.shipmentStatus === 'Cancelled' ? 'selected' : '' %>>Cancelled</option>
+                                                </select>
+                                            </td>
+                                            <td data-label="Profile"> 
+                                                <input type="button" value="View" class="btn btn-primary btn-sm view-button btnBorder rstBtnWidth" data-order-number="<%= order.orderNumber %>" data-url="/merchant/orders" onclick="showViewOrderModal(this)">
+                                            </td>
+                                   
+                                        </tr>
+                                    <% }); %>
+                                <% } else { %>
+                                    <tr>
+                                        <td colspan="6" class="text-center">You are yet to have Order with KorexStyleHub</td>
+                                    </tr>
+                                <% } %>
+                            </tbody>
+                        </table>
+                        <div class="pagination">
+                            <% for (let i=1; i <=totalPages; i++) { %>
+                                <a href="/merchant/orders?page=<%= i %>"
+                                    class="<%= currentPage === i ? 'active' : '' %>">
+                                    <%= i %>
+                                </a>
+                            <% } %>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Recent Sales End -->
+
+        
+          <!-- START VIEW ORDER INFORMATION -->         
+          <div id="viewOrderModal" class="modal">
+            <div style="height: 500px; overflow-y: auto;">
+                <div class="modal-content ">
+                    <span class="close" style="cursor: pointer;" onclick="closeViewOrderModal()">&times;</span>
+                    <div class="card mt-4">
+                        <div class="card-body p-0 table-responsive">
+                            <h4 class="p-3 mb-0">Order Product Description</h4>
+                            <table class="table mb-0">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Image</th>
+                                        <th scope="col">Description</th>
+                                        <th scope="col">Quantity</th>
+                                        <th scope="col">Color</th>
+                                        <th scope="col">Size</th>
+                                        <th scope="col">Amount</th>
+                                        <th scope="col">Reference</th>
+                                        <th scope="col">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="modalTableBody">
+                                          <!-- dynamically create the HTML for the modal form elements after fetching the product details -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- END VIEW ORDER INFORMATION -->
+    
+          
+
+     <!-- Footer Start -->
+     <%- include (`../partials/merchantFooter`); -%>
+     <!-- Footer End -->
+</body>
+
+</html>

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Korex StyleHub</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="Korex StyleHub" name="keywords">
+    <meta content="Korex StyleHub" name="description">
+
+      <!-- Favicon -->
+      <link href="../img/logo.PNG" rel="icon"> 
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Icon Font Stylesheet -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Libraries Stylesheet -->
+    <link href="../lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+    <link href="../lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css" rel="stylesheet" />
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="../css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Template Stylesheet -->
+    <link href="../css/styles.css" rel="stylesheet">
+    
+</head>
+<body>
+
+     
+
+    <div class="container-xxl position-relative bg-white d-flex p-0">
+       
+        <!-- Navbar Start -->
+     <%- include (`../partials/adminHeader`); -%>
+     <!-- Navbar End -->
+
+            <!-- all product tart -->
+            <div class="container-fluid pt-4 px-4">
+
+                   <!-- Toast start -->
+                <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+                    <div id="toastContainer" class="toast-container"></div>
+                </div>
+                                      <!-- Toast End -->
+
+                <div class="bg-light text-center rounded p-4">
+                    <div class="d-flex align-items-center justify-content-between mb-4">
+                        <h6 class="mb-0">Recent Sales</h6>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table text-start align-middle table-bordered table-hover mb-0">
+                            <thead>
+                                <tr class="text-dark">
+                                    <th scope="col"><input class="form-check-input" type="checkbox"></th>
+                                    <th scope="col">Images</th>
+                                    <th scope="col" style="text-align: center;">Name</th>
+                                    <th scope="col">Price</th>
+                                    <th scope="col">Shipping Fees</th>
+                                    <th scope="col">Category</th>
+                                    <th scope="col">Brand</th>
+                                    <th scope="col" style="text-align: center;">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% if (ourProducts.length > 0) { %>
+                                    <% ourProducts.forEach(product => { %>
+                                    <tr class="center">
+                                        <th scope="col"><input class="form-check-input" type="checkbox"></th>
+                                        <td>
+                                            <% if (product.images && product.images.length > 0) { %>
+                                                <% product.images.forEach(image => { %>
+                                                    <img class="imageSize" src="<%= image.imageUrl %>" alt="Product Image">
+                                                <% }) %>
+                                            <% } else { %>
+                                                NA
+                                            <% } %>
+                                        </td>                                        
+                                        <td><%= product.productName %></td>
+                                        <td>$<%= product.productPrice %></td>
+                                        <td>$<%= product.productShipping %></td>
+                                        <td><%= product.productCategory %></td>
+                                        <td><%= product.productBrand %></td>
+                                        <td data-label="Profile">
+                                            <!-- View Button -->
+                                            <input type="button" value="View" class="btn btn-primary btn-sm view-button btnBorder rstBtnWidth" data-product-id="<%= product._id %>"  data-url="/admin/viewProduct" onclick="showViewProductModal(this)">
+                                            <!-- Delete Button -->
+                                            <input type="button" value="Delete" class="btn btn-danger btn-sm delete-button btnBorder" data-product-id="<%= product._id %>" data-url="/admin/deleteProduct"  onclick="showDeleteProductModal(this)">
+                                        </td>
+                                    </tr>
+                                    <% }); %>
+                                <% } else { %>
+                                    <tr>
+                                        <td colspan="8" class="text-center">You are yet to have products with KorexStyleHub</td>
+                                    </tr>
+                                <% } %>
+                            </tbody>
+                        </table>
+                        <div class="pagination">
+                            <% for (let i=1; i <=totalPages; i++) { %>
+                                <a href="/admin/index?page=<%= i %>"
+                                    class="<%= currentPage === i ? 'active' : '' %>">
+                                    <%= i %>
+                                </a>
+                            <% } %>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- all product  End -->
+
+                             
+            <!-- START VIEW PRODUCT -->
+            <div id="viewProductModal" class="modal">
+                <div style="height: 500px; overflow-y: auto;">
+                    <div class="modal-content">
+                        <span class="close" style="cursor: pointer;" onclick="closeViewProductModal()">&times;</span>
+                        <div class=" mt-4">
+                            <div class="card-body p-0">
+                                <h4 class="p-3 mb-0">About this item</h4>
+                                <div id="modalContent">
+                                 <!-- dynamically create the HTML for the modal form elements after fetching the product details -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- END VIEW PRODUCT -->
+   
+
+
+     <!-- Footer Start -->
+     <%- include (`../partials/adminFooter`); -%>
+     <!-- Footer End -->
+</body>
+
+</html>

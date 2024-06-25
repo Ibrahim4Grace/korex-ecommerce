@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Korex StyleHub</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="Korex StyleHub" name="keywords">
+    <meta content="Korex StyleHub" name="description">
+
+      <!-- Favicon -->
+      <link href="../img/logo.PNG" rel="icon"> 
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Icon Font Stylesheet -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Libraries Stylesheet -->
+    <link href="../lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+    <link href="../lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css" rel="stylesheet" />
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="../css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Template Stylesheet -->
+    <link href="../css/styles.css" rel="stylesheet">
+</head>
+<body>
+
+    <div class="container-xxl position-relative bg-white d-flex p-0">
+       
+        <%- include (`../partials/merchantHeader`); -%>
+  
+        <!-- Product Start -->
+        <div class="container-fluid pt-4 px-4">
+                                     <!-- Toast start -->
+            <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+                <div id="toastContainer" class="toast-container"></div>
+            </div>
+                                      <!-- Toast End -->
+
+            <div class="bg-light text-center rounded p-4">
+                <div class="d-flex align-items-center justify-content-between mb-4">
+                    <h6 class="mb-0">Products</h6>
+                    <div class="tab">
+                        <a class="tablinks" onclick="openCity(event, 'All')" id="defaultOpen">All</a>
+                        <a class="tablinks" onclick="openCity(event, 'In Stock')">In Stock</a>
+                        <a class="tablinks" onclick="openCity(event, 'Low Stock')">Low Stock</a>
+                        <a class="tablinks" onclick="openCity(event, 'Out of Stock')">Out of Stock</a>
+                    </div>
+                    <button type="button" class="btn btn-primary m-2 btnBorder" id="newProductBtn">+ New Product</button>
+                     <!-- OPEN MODEL END  -->
+                </div>
+    
+                <!-- START DISPLAYING ALL PRODUCT INFORMATION -->
+                <div id="All" class="tabcontent">
+                    <div class="table-responsive">
+
+                        <div class="houseSearch">
+                            <input class="houseSearch" type="text" id="searchInput" placeholder="Search products by name...">
+                            <div id="searchResults"></div>
+                        </div>
+    
+                        <table class="table text-start align-middle table-bordered table-hover mb-0">
+                            <thead>
+                                <tr class="text-dark">
+                                    <th scope="col"><input class="form-check-input" type="checkbox"></th>
+                                    <th scope="col">Images</th>
+                                    <th scope="col" style="text-align: center;">Name</th>
+                                    <th scope="col">Price</th>
+                                    <th scope="col">Shipping Fees</th>
+                                    <th scope="col">Category</th>
+                                    <th scope="col">Brand</th>
+                                    <th scope="col" style="text-align: center;">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="productTableBody">
+                                <% if (ourProducts.length > 0) { %>
+                                    <% ourProducts.forEach(product => { %>
+                                    <tr class="center">
+                                        <th scope="col"><input class="form-check-input" type="checkbox"></th>
+                                        <td>
+                                            <% if (product.images && product.images.length > 0) { %>
+                                                <% product.images.forEach(image => { %>
+                                                    <img class="imageSize" src="<%= image.imageUrl %>" alt="Product Image">
+                                                <% }) %>
+                                            <% } else { %>
+                                                NA
+                                            <% } %>
+                                        </td>                                        
+                                        <td><%= product.productName %></td>
+                                        <td>$<%= product.productPrice %></td>
+                                        <td>$<%= product.productShipping %></td>
+                                        <td><%= product.productCategory %></td>
+                                        <td><%= product.productBrand %></td>
+                                        <td data-label="Profile">
+                                            <!-- View Button -->
+                                            <input type="button" value="View" class="btn btn-primary btn-sm view-button btnBorder rstBtnWidth" data-product-id="<%= product._id %>" data-url="/merchant/viewProduct" onclick="showViewProductModal(this)">
+                                            <!-- Edit Button -->
+                                            <input type="button" value="Edit" class="btn btn-primary btn-sm edit-button btnBorder rstBtnWidth rstBtnWidthSpace1"  data-product-id="<%= product._id %>"  onclick="showEditProductModal(this)">
+                                            <!-- Delete Button -->
+                                            <input type="button" value="Delete" class="btn btn-danger btn-sm delete-button btnBorder" data-product-id="<%= product._id %>" data-url="/merchant/deleteProduct" onclick="showDeleteProductModal(this)">
+                                        </td>
+                                    </tr>
+                                    <% }); %>
+                                <% } else { %>
+                                    <tr>
+                                        <td colspan="8" class="text-center">You are yet to have products with KorexStyleHub</td>
+                                    </tr>
+                                <% } %>
+                            </tbody>
+                        </table>
+                        <div id="searchNotFound" style="display: none; text-align: center;">Product not found</div>
+                        <div class="pagination">
+                            <% for (let i=1; i <=totalPages; i++) { %>
+                                <a href="/merchant/products?page=<%= i %>"
+                                    class="<%= currentPage === i ? 'active' : '' %>">
+                                    <%= i %>
+                                </a>
+                            <% } %>
+                        </div>
+                    </div>
+                </div>
+                 <!-- END DISPLAYING ALL PRODUCT INFORMATION -->
+
+                 
+    <!-- START VIEW PRODUCT -->
+     <div id="viewProductModal" class="modal">
+        <div style="height: 500px; overflow-y: auto;">
+            <div class="modal-content">
+                <span class="close" style="cursor: pointer;" onclick="closeViewProductModal()">&times;</span>
+                <div class=" mt-4">
+                    <div class="card-body p-0">
+                        <h4 class="p-3 mb-0">About this item</h4>
+                        <div id="modalContent">
+                            <!-- dynamically create the HTML for the modal form elements after fetching the product details -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+   <!-- END VIEW PRODUCT -->
+
+   <!-- START EDIT PRODUCT -->
+    <div id="editProductModal" class="modal styleInput">
+        <div class="modal-content">
+            <span class="close" style="cursor: pointer;" onclick="closeEditProductModal()">&times;</span>
+            <h2>Edit Product</h2>
+            <form id="editProductForm" method="post" action="/merchant/editProductPost">
+                <div id="editProductFormContent">
+                    <!-- dynamically create the HTML for the modal form elements after fetching the product details -->
+                </div>
+                <div class="col-12 d-flex button_div">
+                    <button type="submit">Submit</button>
+                    <button type="button" onclick="closeEditProductModal()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+   <!-- END EDIT PRODUCT -->
+         
+            <!-- START PRODUCT IN STOCK -->
+            <div id="In Stock" class="tabcontent">
+                <h3>In Stock</h3>
+                <div class="table-responsive">
+                    <table class="table text-start align-middle table-bordered table-hover mb-0">
+                        <thead>
+                            <tr class="text-dark">
+                                <th scope="col"><input class="form-check-input" type="checkbox"></th>
+                                <th scope="col">Images</th>
+                                <th scope="col" style="text-align: center;">Name</th>
+                                <th scope="col">Price</th>
+                                <th scope="col">Shipping Fees</th>
+                                <th scope="col">Category</th>
+                                <th scope="col">Brand</th>
+                                <th scope="col" style="text-align: center;">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% if (ourProducts.length > 0) { %>
+                                <% ourProducts.forEach(product => { %>
+                                    <% if (product.stockStatus === 'In Stock') { %>
+                                        <tr class="center">
+                                            <th scope="col"><input class="form-check-input" type="checkbox"></th>
+                                            <td>
+                                                <% if (product.images && product.images.length > 0) { %>
+                                                    <% product.images.forEach(image => { %>
+                                                        <img class="imageSize" src="<%= image.imageUrl %>" alt="Product Image">
+                                                    <% }) %>
+                                                <% } else { %>
+                                                    NA
+                                                <% } %>
+                                            </td>  
+                                            <td><%= product.productName %></td>
+                                            <td>$<%= product.productPrice %></td>
+                                            <td>$<%= product.productShipping %></td>
+                                            <td><%= product.productCategory %></td>
+                                            <td><%= product.productBrand %></td>
+                                            <td data-label="Profile">
+                                                <!-- View Button -->
+                                                <input type="button" value="View" class="btn btn-primary btn-sm view-button btnBorder rstBtnWidth" data-product-id="<%= product._id %>">
+                                                <!-- Edit Button -->
+                                                <input type="button" value="Edit" class="btn btn-primary btn-sm edit-button btnBorder rstBtnWidth rstBtnWidthSpace1"  data-product-id="<%= product._id %>">
+                                                <!-- Delete Button -->
+                                                <input type="button" value="Delete" class="btn btn-danger btn-sm delete-button btnBorder" data-product-id="<%= product._id %>">
+                                            </td>
+                                        </tr>
+                                    <% } %>
+                                <% }); %>
+                            <% } else { %>
+                                 <tr>
+                                    <td colspan="8" class="text-center">You are yet to have products In stock</td>
+                                </tr>
+                            <% } %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- END PRODUCT IN STOCK -->
+    
+            <!-- START PRODUCT LOW STOCK -->
+            <div id="Low Stock" class="tabcontent">
+                <h3>Low Stock</h3>
+                <div class="table-responsive">
+                    <table class="table text-start align-middle table-bordered table-hover mb-0">
+                        <thead>
+                            <tr class="text-dark">
+                                <th scope="col"><input class="form-check-input" type="checkbox"></th>
+                                <th scope="col">Images</th>
+                                <th scope="col" style="text-align: center;">Name</th>
+                                <th scope="col">Price</th>
+                                <th scope="col">Shipping Fees</th>
+                                <th scope="col">Category</th>
+                                <th scope="col">Brand</th>
+                                <th scope="col" style="text-align: center;">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% if (ourProducts.length > 0) { %>
+                                <% ourProducts.forEach(product => { %>
+                                    <% if (product.stockStatus === 'Low Stock') { %>
+                                        <tr class="center">
+                                            <th scope="col"><input class="form-check-input" type="checkbox"></th>
+                                            <td>
+                                                <% if (product.images && product.images.length > 0) { %>
+                                                    <% product.images.forEach(image => { %>
+                                                        <img class="imageSize" src="<%= image.imageUrl %>" alt="Product Image">
+                                                    <% }) %>
+                                                <% } else { %>
+                                                    NA
+                                                <% } %>
+                                            </td>  
+                                            <td><%= product.productName %></td>
+                                            <td>$<%= product.productPrice %></td>
+                                            <td>$<%= product.productShipping %></td>
+                                            <td><%= product.productCategory %></td>
+                                            <td><%= product.productBrand %></td>
+                                            <td data-label="Profile">
+                                                <!-- View Button -->
+                                                <input type="button" value="View" class="btn btn-primary btn-sm view-button btnBorder rstBtnWidth" data-product-id="<%= product._id %>">
+                                                <!-- Edit Button -->
+                                                <input type="button" value="Edit" class="btn btn-primary btn-sm edit-button btnBorder rstBtnWidth rstBtnWidthSpace1"  data-product-id="<%= product._id %>">
+                                                <!-- Delete Button -->
+                                                <input type="button" value="Delete" class="btn btn-danger btn-sm delete-button btnBorder" data-product-id="<%= product._id %>">
+                                            </td>
+                                        </tr>
+                                    <% } %>
+                                <% }); %>
+                            <% } else { %>
+                                 <tr>
+                                    <td colspan="8" class="text-center">You are yet to have products In stock</td>
+                                </tr>
+                            <% } %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- END PRODUCT LOW STOCK -->
+    
+            <!-- START PRODUCT OUT OF STOCK -->
+            <div id="Out of Stock" class="tabcontent">
+                <h3>Out of Stock</h3>
+                <div class="table-responsive">
+                    <table class="table text-start align-middle table-bordered table-hover mb-0">
+                        <thead>
+                            <tr class="text-dark">
+                                <th scope="col"><input class="form-check-input" type="checkbox"></th>
+                                <th scope="col">Images</th>
+                                <th scope="col" style="text-align: center;">Name</th>
+                                <th scope="col">Price</th>
+                                <th scope="col">Shipping Fees</th>
+                                <th scope="col">Category</th>
+                                <th scope="col">Brand</th>
+                                <th scope="col" style="text-align: center;">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% if (ourProducts.length > 0) { %>
+                                <% ourProducts.forEach(product => { %>
+                                    <% if (product.stockStatus === 'Out Stock') { %>
+                                        <tr class="center">
+                                            <th scope="col"><input class="form-check-input" type="checkbox"></th>
+                                            <td>
+                                                <% if (product.images && product.images.length > 0) { %>
+                                                    <% product.images.forEach(image => { %>
+                                                        <img class="imageSize" src="<%= image.imageUrl %>" alt="Product Image">
+                                                    <% }) %>
+                                                <% } else { %>
+                                                    NA
+                                                <% } %>
+                                            </td>  
+                                            <td><%= product.productName %></td>
+                                            <td>$<%= product.productPrice %></td>
+                                            <td>$<%= product.productShipping %></td>
+                                            <td><%= product.productCategory %></td>
+                                            <td><%= product.productBrand %></td>
+                                            <td data-label="Profile">
+                                                <!-- View Button -->
+                                                <input type="button" value="View" class="btn btn-primary btn-sm view-button btnBorder rstBtnWidth" data-product-id="<%= product._id %>">
+                                                <!-- Edit Button -->
+                                                <input type="button" value="Edit" class="btn btn-primary btn-sm edit-button btnBorder rstBtnWidth rstBtnWidthSpace1"  data-product-id="<%= product._id %>">
+                                                <!-- Delete Button -->
+                                                <input type="button" value="Delete" class="btn btn-danger btn-sm delete-button btnBorder" data-product-id="<%= product._id %>">
+                                            </td>
+                                        </tr>
+                                    <% } %>
+                                <% }); %>
+                            <% } else { %>
+                                 <tr>
+                                    <td colspan="8" class="text-center">You are yet to have products In stock</td>
+                                </tr>
+                            <% } %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- END PRODUCT OUT OF STOCK -->
+        </div>
+    </div>
+            <!-- Product End -->
+
+     <!-- Footer Start -->
+     <%- include (`../partials/merchantFooter`); -%>
+     <!-- Footer End -->
+
+         <!-- Create product Modal -->
+    <form id="productForm" action="/merchant/merchantProductsPost" method="post" enctype="multipart/form-data">
+        <div id="myModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content" style="width: 100%;">
+                             <!-- Modal Header  (1/3) -->
+                        <div class="modal-header">
+                            <h3 id="myModalLabel">Add New Product</h3>
+                        </div>
+    
+                         <!-- Modal Body (2/3) -->
+                        <div class="modal-body" id="serviceModalMultiStep">
+                                 <!-- Progress Bar -->
+                            <div class="progress">
+                                <div class="progress-bar progress-bar-success progress-bar-striped active" 
+                                    role="progressbar" aria-valuenow="1" aria-valuemin="1" aria-valuemax="4" style="width: 20%;">
+                                </div>
+                            </div>
+    
+                                 <!-- Tab Steps-->
+                            <div class="navbar" style="display: block;">
+                                <div class="navbar-inner">
+                                    <ul class="nav nav-tabs nav-justified">
+                                        <li class="active">
+                                            <a href="#step1" data-toggle="tab" data-step="1">Information</a>
+                                        </li>
+                                        <li>
+                                            <a href="#step2" data-toggle="tab" data-step="2">Specifications</a>
+                                        </li>
+                                        <li>
+                                            <a href="#step3" data-toggle="tab" data-step="3">Image</a>
+                                        </li>
+                                    
+                                    </ul>
+                                </div>
+                            </div>
+    
+                                 <!-- Tab Content -->
+                            <div class="tab-content">
+                                     <!-- Tab 1 -->
+                                <div class="tab-pane fade in active" id="step1">
+                                    <div class="well">
+                                        <label>Product Name</label>
+                                        <input type="text" class="form-control" name="productName" placeholder="Enter product name" required autocomplete="no">
+                                        <div id="productNameError" class="error"></div>
+                                    
+                                        <br>
+                                        <label>Product Description</label>
+                                        <textarea name="productDescription" class="form-control input-lg" rows="5" maxlength="250" onfocus="if(this.value === 'Enter product description') { this.value = ''; }">Enter product description</textarea>
+                                        <div id="productDescriptionError" class="error"></div>
+                                        <br>
+    
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label for="size">Product Price ($)</label>
+                                                <input type="text" name="productPrice" class="form-control" placeholder="Example 100." autocomplete="no">
+                                                <div id="productPriceError" class="error"></div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label for="color">Product Shipping ($)</label>
+                                                <input type="text" name="productShipping" class="form-control" placeholder="Example 90" autocomplete="no">
+                                                <div id="productShippingError" class="error"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+    
+                                     <!-- Tab 2 -->
+                                <div class="tab-pane fade" id="step2">
+                                    <div class="well">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <% const productCategory = ["Women's Dress","Men's Dress","Baby's Dress","Blazers","Jackets","Jeans","Jumpsuits","loafers","Sleepwears","Sneakers","Sportswears","Swimwears"]; %>
+                                                <label for="color">Product Category</label>
+                                                <select name="productCategory" class="form-control backColor" style="background-color: #fff;">
+                                                    <option value="">Select product category</option>
+                                                    <% productCategory.forEach((category )=> { %>
+                                                        <option value="<%- category  %>"><%- category  %></option>
+                                                     <% }) %>
+                                                </select>
+                                                <div id="productCategoryError" class="error"></div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label for="color">Product brand</label>
+                                                <input type="text" name="productBrand" class="form-control" placeholder="Enter product brand" autocomplete="no">
+                                                <div id="productBrandError" class="error"></div>
+                                            </div>
+                                        </div>
+    
+                                        <div class="row">
+                                            <div class="col-md-6 multiSelect">
+                                                <select name="productSize[]" class="multiSelect_field" data-placeholder="Select Sizes" multiple>
+                                                    <option value="XS">XS</option>
+                                                    <option value="S">S</option>
+                                                    <option value="M">M</option>
+                                                    <option value="L">L</option>
+                                                    <option value="XL">XL</option>
+                                                    <option value="38">38</option>
+                                                    <option value="39">39</option>
+                                                    <option value="40">40</option>
+                                                    <option value="41">41</option>
+                                                    <option value="42">42</option>
+                                                    <option value="43">43</option>
+                                                    <option value="44">44</option>
+                                                    <option value="45">45</option>
+                                                </select>
+                                                    <div id="productSizeError" class="error"></div>
+                                            </div>
+                                            <div class="col-md-6 multiSelect">
+                                                <select name="productColor[]" class="multiSelect_field" data-placeholder="Select Colors" multiple>
+                                                    <option value="Black">Black</option>
+                                                    <option value="Blue">Blue</option>
+                                                    <option value="Green">Green</option>
+                                                    <option value="Gold">Gold</option>
+                                                    <option value="White">White</option>
+                                                    <option value="Pink">Pink</option>
+                                                </select>
+                                                <div id="productColorError" class="error"></div>
+                                            </div>
+                                        </div><br>
+    
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <label for="color">Quantity</label>
+                                                    <input type="number" name="productQuantity" class="form-control" autocomplete="no">
+                                                    <div id="productQuantityError" class="error"></div>
+                                                </div>
+    
+                                                <div class="col-md-6">
+                                                    <% const productGender = ["Female","Unisex","Male"]; %>
+                                                    <label for="color">Product Sex</label>
+                                                    <select name="productGender" class="form-control backColor" style="background-color: #fff;">
+                                                        <% productGender.forEach((gender )=> { %>
+                                                            <option value="<%- gender  %>"><%- gender  %></option>
+                                                         <% }) %>
+                                                    </select>
+                                                    <div id="productGenderError" class="error"></div>
+                                                </div>
+                                            </div>
+                                    </div>
+                                </div>
+                                     <!-- Tab 3 -->
+                                    <div class="tab-pane fade" id="step3">
+                                        <div class="well">
+                                            <section>
+                                                <div class="container my-5" id="form-upload">
+                                                    <h3 class="text-center">Multiple Upload Images and Remove Button </h3>
+                                                    <div class="row">
+                                                        <div>
+                                                            <label style="font-size: 14px;">
+                                                                <span style='color:navy;font-weight:bold'>Attachment Instructions :</span>
+                                                            </label>
+                                                            <ul>
+                                                                <li>
+                                                                    Allowed only files with extension (jpg, png, gif)
+                                                                </li>
+                                                                <li>
+                                                                    Maximum number of allowed files 3 
+                                                                </li>
+                                                            </ul>
+                                                            <span class="btn btn-success fileinput-button">
+                                                                <span>Select Attachment</span>
+                                                                <input type="file" name="images[]" id="files" multiple="multiple accept="image/jpeg, image/png, image/gif,"><br />
+                                                            </span>
+                                                            <output id="Filelist"></output>
+                                                        </div>
+                                                     </div>
+                                                  </div>
+                                            </section>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+    
+                             <!-- Modal Footer (3/3) -->
+                            <div class="modal-footer" style="margin: 1px auto;">
+                                <div class="left-footer">
+                                    <a class="btn btn-success first" href="#">Start over</a>
+                                </div>
+                                <div class="right-footer">
+                                    <a class="btn btn-default back" href="#">Back</a>
+                                    <a class="btn btn-default next" href="#">Next</a>
+                                    <button type="submit" class="btn btn-primary">Submit</button>
+                                </div>
+                            </div>
+                        </div>
+                 
+                </div>
+        </div>
+    </form>
+
+    
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+    <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="iconX">
+        <g stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+        </g>
+    </symbol>
+</svg>
+
+               
+
+
+</body>
+
+</html>

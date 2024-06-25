@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Korex StyleHub</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="Korex StyleHub" name="keywords">
+    <meta content="Korex StyleHub" name="description">
+
+    <!-- Favicon -->
+    <link href="img/logo.PNG" rel="icon"> 
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet"> 
+
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+
+    <!-- Libraries Stylesheet -->
+    <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="css/style.css" rel="stylesheet">
+    <link href="css/landingPage.css" rel="stylesheet">
+
+</head>
+
+<body>
+ <!-- Navbar Start -->
+ <%- include (`partials/shopHeader`); -%>
+ <!-- Navbar End -->
+
+
+    <!-- Page Header Start -->
+    <div class="container-fluid bg-secondary mb-5">
+        <div class="d-flex flex-column align-items-center justify-content-center" style="min-height: 300px">
+            <h1 class="font-weight-semi-bold text-uppercase mb-3">Product Details</h1>
+            <div class="d-inline-flex">
+                <p class="m-0"><a href="/index">Home</a></p>
+                <p class="m-0 px-2">-</p>
+                <p class="m-0">Product Details</p>
+            </div>
+        </div>
+    </div>
+    <!-- Page Header End -->
+
+
+    <!-- Shop Detail Start -->
+    <div class="container-fluid py-5">
+        <div class="row px-xl-5">
+            <div class="col-lg-5 pb-5">
+                <div id="product-carousel" class="carousel slide" data-ride="carousel">
+                    <div class="carousel-inner border">
+                        <% if (product.images && product.images.length > 0) { %>
+                            <% product.images.forEach((image, index) => { %>
+                                <div class="carousel-item <%= index === 0 ? 'active' : '' %>">
+                                    <img class="w-100 h-100" src="<%= image.imageUrl %>" alt="Product Image">
+                                </div>
+                            <% }); %>
+                        <% } else { %>
+                            <div class="carousel-item active">
+                                NA
+                            </div>
+                        <% } %>
+                    </div>
+                    
+                    <a class="carousel-control-prev" href="#product-carousel" data-slide="prev">
+                        <i class="fa fa-2x fa-angle-left text-dark"></i>
+                    </a>
+                    <a class="carousel-control-next" href="#product-carousel" data-slide="next">
+                        <i class="fa fa-2x fa-angle-right text-dark"></i>
+                    </a>
+                </div>
+            </div>
+
+            <div class="col-lg-7 pb-5">
+                <h3 class="font-weight-semi-bold"><%= product.productName %></h3>
+                <div class="d-flex mb-3">
+                    <div class="text-primary mr-2">
+                        <small class="fas fa-star"></small>
+                        <small class="fas fa-star"></small>
+                        <small class="fas fa-star"></small>
+                        <small class="fas fa-star-half-alt"></small>
+                        <small class="far fa-star"></small>
+                    </div>
+                    <small class="pt-1">(<%= product.reviews.length %> review<%= product.reviews.length !== 1 ? 's' : '' %>)</small>
+                </div>
+                <h3 class="font-weight-semi-bold mb-4"><%= product.productPrice %></h3>
+                <p class="mb-4"><%= product.productDescription %></p>
+
+                <div class="d-flex mb-3">
+                    <p class="text-dark font-weight-medium mb-0 mr-3">Sizes:</p>
+                    <form>
+                        <% product.productSize.forEach((size, index) => { %>
+                            <div class="custom-control custom-radio custom-control-inline">
+                                <input type="radio" class="custom-control-input" id="size-<%= index + 1 %>" name="size" value="<%= size %>" required>
+                                <label class="custom-control-label" for="size-<%= index + 1 %>"><%= size %></label>
+                            </div>
+                        <% }); %>
+                    </form>
+                </div>
+
+                <div class="d-flex mb-3">
+                    <p class="text-dark font-weight-medium mb-0 mr-3">Colors:</p>
+                    <form>
+                        <% product.productColor.forEach((Colors, index) => { %>
+                            <div class="custom-control custom-radio custom-control-inline">
+                                <input type="radio" class="custom-control-input" id="Colors-<%= index + 1 %>" name="Colors" value="<%= Colors %>" required>
+                                <label class="custom-control-label" for="Colors-<%= index + 1 %>"><%= Colors %></label>
+                            </div>
+                        <% }); %>
+                    </form>
+                </div>
+
+                <div class="d-flex align-items-center mb-4 pt-2">
+                    <div class="input-group quantity mr-3" style="width: 130px;">
+                        <div class="input-group-btn">
+                            <button class="btn btn-primary btn-minus" >
+                            <i class="fa fa-minus"></i>
+                            </button>
+                        </div>
+                        <input type="text" class="form-control bg-secondary text-center" value="1">
+                        <div class="input-group-btn">
+                            <button class="btn btn-primary btn-plus">
+                                <i class="fa fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-primary px-3 addToCart" 
+                        data-product-id="<%= product._id %>" data-url="/addToCartPage/<%= product._id %>">
+                        <i class="fa fa-shopping-cart mr-1"></i> Add To Cart
+                    </button>
+
+                </div>
+            </div>
+        </div>
+        <div class="row px-xl-5">
+            <div class="col">
+                <div class="nav nav-tabs justify-content-center border-secondary mb-4">
+                    <a class="nav-item nav-link active" data-toggle="tab" href="#tab-pane-1">Description</a>
+                    <a class="nav-item nav-link" data-toggle="tab" href="#tab-pane-2">Information</a>
+                    <a class="nav-item nav-link" data-toggle="tab" href="#tab-pane-3"><%= product.reviews.length %> Reviews</a>
+                </div>
+                <div class="tab-content">
+                                  <!-- Description start -->
+                    <div class="tab-pane fade show active" id="tab-pane-1">
+                        <h4 class="mb-3">Product Description</h4>
+                        <p><img class="w-100" src="img/chart.jpg" alt="chart Image"></p>
+                    </div>
+                                  <!-- Description End -->
+
+                                  <!-- Additional Information start -->
+                    <div class="tab-pane fade" id="tab-pane-2">
+                        <h4 class="mb-3">Additional Information</h4>
+                        <p><%= product.productDescription %></p>
+                    </div>
+                                <!-- Additional Information end -->
+
+                                <!-- review Start -->
+                    <div class="tab-pane fade" id="tab-pane-3">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div style="height: 328px; overflow-y: auto;">
+                                    <div class="review-container" style="width: 440px;">
+                                        <h5 class="mb-4"><%= product.reviews.length %> review<%= product.reviews.length !== 1 ? 's' : '' %> for <%= product.productName %></h5>
+                                        <% if (product.reviews.length > 0) { %>
+                                            <% product.reviews.forEach(review => { %>
+                                                <div class="media mb-4">
+                                                    <div class="media-body">
+                                                        <h6>
+                                                            <%= review.userFirstName %>  
+                                                            <%= review.userLastName %>
+                                                            <small> - <i><%= review.date_added.toDateString() + ' ' + review.date_added.toLocaleTimeString() %></i></small>
+                                                        </h6>                                                    
+                                                        <div class="text-primary mb-2">
+                                                            <% for (let i = 0; i < review.reviewRating; i++) { %>
+                                                                <i class="fas fa-star"></i>
+                                                            <% } %>
+                                                            <% for (let i = 0; i < 5 - review.reviewRating; i++) { %>
+                                                                <i class="far fa-star"></i>
+                                                            <% } %>
+                                                        </div>
+                                                        <p><%= review.reviewMessage %></p>
+                                                    </div>
+                                                </div>
+                                            <% }); %>
+                                        <% } else { %>
+                                            No review for this product at the moment
+                                        <% } %>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                                   <!-- review End -->
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Shop Detail End -->
+
+
+    <!-- Products Start -->
+    <div class="container-fluid py-5">
+        <div class="text-center mb-4">
+            <h2 class="section-title px-5"><span class="px-2">You May Also Like</span></h2>
+        </div>
+        <div class="row px-xl-5">
+            <div class="col">
+                <div class="owl-carousel related-carousel">
+                    <% randomProducts.forEach(product => { %>
+                        <div class="card product-item border-0">
+                            <div class="card-header product-img position-relative overflow-hidden bg-transparent border p-0">
+                                <% if (product.images && product.images.length > 0) { %>
+                                    <a href="/productDetails?productId=<%= product._id %>" class="product-link" onclick="openProductDetail(event)" style="cursor: pointer;">
+                                        <img class="img-fluid w-100" src="<%= product.images[0].imageUrl %>" alt="Product Image">
+                                    </a>
+                                <% } else { %>
+                                    NA
+                                <% } %>
+                            </div>
+                            <div class="card-body border-left border-right text-center p-0 pt-4 pb-3">
+                                <h6 class="text-truncate mb-3"><%= product.productName %></h6>
+                                <div class="d-flex justify-content-center">
+                                    <h6>$<%= product.productPrice %></h6><h6 class="text-muted ml-2"><del><%= product.productOldPrice %></del></h6>
+                                </div>
+                            </div>
+                            <div class="card-footer d-flex justify-content-between bg-light border">
+                                <a href="#" data-toggle="modal" class="colrs" 
+                                    onclick="showProductDetails('<%= product._id %>')" data-target="#product_view">
+                                    <i class="fas fa-eye text-primary mr-1"></i>Preview
+                                </a>
+                                <a href="#" class="btn btn-sm text-dark p-0 addToCart" 
+                                    data-product-id="<%= product._id %>" data-url="/addToCartPage/<%= product._id %>">
+                                    <i class="fas fa-shopping-cart text-primary mr-1"></i>Add To Cart
+                                </a>
+                            </div>
+                        </div>
+                    <% }); %>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Products End -->
+
+
+      <!-- Footer Start -->
+      <%- include (`partials/footer`); -%>
+      <!-- Footer End -->
+
+
+</body>
+
+</html>

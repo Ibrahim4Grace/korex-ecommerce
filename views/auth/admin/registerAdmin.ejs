@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Korex StyleHub</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="Korex StyleHub" name="keywords">
+    <meta content="Korex StyleHub" name="description">
+
+    <!-- Favicon -->
+    <link href="../../img/logo.PNG" rel="icon">
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">  
+
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+
+    <!-- Libraries Stylesheet -->
+    <link href="../../lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="../../css/style.css" rel="stylesheet">
+    <link href="../../css/landingPage.css" rel="stylesheet">
+    <link href="../../css/adminform.css" rel="stylesheet">
+
+</head>
+
+<body>
+   
+ <!-- Navbar Start -->
+ <%- include (`../../partials/authHeader`); -%>
+ <!-- Navbar End -->
+
+ 
+ <div class="container mt-3">
+    <div class="form_wrapper">
+        <div class="form_container">
+            <div class="title_container">
+                <h2>Admin Registration Form</h2>
+            </div>
+            <div class="row clearfix">
+                <div class="">
+                    <form id="adminRegistrationForm" action="/auth/admin/registerAdminPost" method="post">
+                        <div class="input_field"> <span><i aria-hidden="true" class="fa fa-envelope"></i></span>
+                            <input type="email"  name="adminEmail" placeholder="Email" />
+                            <div id="adminEmailError" class="error"></div>
+                        </div>
+                        <div class="input_field"> <span><i aria-hidden="true" class="fa fa-user"></i></span>
+                            <input type="text" name="adminUsername" placeholder="Username" />
+                            <div id="adminUsernameError" class="error"></div>
+                        </div>
+                        <div class="input_field"> <span><i aria-hidden="true" class="fa fa-lock"></i></span>
+                            <input type="password" name="adminPassword" placeholder="Password" />
+                            <div id="adminPasswordError" class="error"></div>
+                        </div>
+                        <div class="input_field"> <span><i aria-hidden="true" class="fa fa-lock"></i></span>
+                            <input type="password" name="ConfirmAdminPassword" placeholder="Re-type Password" />
+                            <div id="ConfirmAdminPasswordError" class="error"></div>
+                        </div>
+                        <div class="row clearfix">
+                            <div class="col_half">
+                                <div class="input_field"> <span><i aria-hidden="true" class="fa fa-user"></i></span>
+                                    <input type="text" name="adminFirstName" placeholder="First Name" />
+                                    <div id="adminFirstNameError" class="error"></div>
+                                </div>
+                            </div>
+                            <div class="col_half">
+                                <div class="input_field"> <span><i aria-hidden="true" class="fa fa-user"></i></span>
+                                    <input type="text" name="adminLastName" placeholder="Last Name" />
+                                    <div id="adminLastNameError" class="error"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row clearfix">
+                            <div class="col_half">
+                                <div class="input_field"> <span><i aria-hidden="true" class="fa fa-map-marker"></i></span>
+                                    <input type="text" name="adminAddress" placeholder="Address" />
+                                    <div id="adminAddressError" class="error"></div>
+                                </div>
+                            </div>
+                            <div class="col_half">
+                                <div class="input_field"> <span><i aria-hidden="true" class="fa fa-map-marker"></i></span>
+                                    <input type="text" name="adminCity" placeholder="City" />
+                                    <div id="adminCityError" class="error"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="input_field select_option">
+                            <% const states = [
+                            "Abia", "Adamawa", "Akwa Ibom", "Anambra", "Bauchi", "Bayelsa", "Benue", "Borno", "Cross River",
+                            "Delta", "Ebonyi", "Edo", "Ekiti", "Enugu", "Gombe", "Imo", "Jigawa", "Kaduna", "Kano", "Katsina",
+                            "Kebbi", "Kogi", "Kwara", "Lagos", "Nasarawa", "Niger", "Ogun", "Ondo", "Osun", "Oyo", "Plateau",
+                            "Rivers", "Sokoto", "Taraba", "Yobe", "Zamfara"
+                            ]; %>
+                            <select name="adminState">
+                                <option value="">Select state</option>
+                                <% states.forEach((state )=> { %>
+                                   <option value="<%- state  %>"><%- state  %></option>
+                                   <% }) %>
+                               </select>
+                            <div class="select_arrow"></div>
+                            <div id="adminStateError" class="error"></div>
+                        </div>
+                        <input class="button" type="submit" id="submitButton" value="Register" />
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+  </div>
+
+
+    <!-- Footer Start -->
+    <%- include (`../../partials/authFooter`); -%>
+    <!-- Footer End -->
+
+    <script>
+        'use strict';
+
+//Registration submission
+document.addEventListener('DOMContentLoaded', function () {
+    const adminRegistrationForm = document.getElementById('adminRegistrationForm');
+    adminRegistrationForm.addEventListener('submit', async function (event) {
+        event.preventDefault(); 
+
+        // Change the appearance of the submit button to show a spinner
+        const submitButton = document.getElementById('submitButton');
+        submitButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Submitting...';
+        submitButton.disabled = true; // Disable the button while submitting
+
+        try {
+            // Get form data 
+            const formData = Object.fromEntries(new FormData(adminRegistrationForm));
+
+            // Send form data to server using AJAX
+            const response = await fetch('/auth/admin/registerAdminPost', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formData)
+            });
+
+            const data = await response.json();
+            if (data.success) {
+                window.location.href = data.redirectUrl;
+            } else {
+                // If registration failed, display error messages
+                const errors = data.errors;
+                errors.forEach(error => {
+                    const errorElement = document.getElementById(`${error.key}Error`);
+                    if (errorElement) {
+                        errorElement.textContent = error.msg;
+                    }
+                });
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('An error occurred while processing your request.');
+        } finally {
+            // Restore the appearance of the submit button
+            submitButton.innerHTML = 'Submit';
+            submitButton.disabled = false; // Re-enable the button
+        }
+    });
+
+    // Add event listener to each input field to clear error messages
+    const inputFields = document.querySelectorAll('input, select'); 
+    inputFields.forEach(inputField => {
+        inputField.addEventListener('input', () => {
+            const fieldName = inputField.name;
+            const errorElement = document.getElementById(fieldName + 'Error');
+            if (errorElement) {
+                errorElement.innerText = '';
+            }
+        });
+    });
+});
+
+
+    </script>
+
+
+
+</body>
+
+</html>

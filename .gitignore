@@ -1,0 +1,22 @@
+# Environment variables
+.env
+
+# Node dependencies
+node_modules/
+
+# Build output
+dist/
+
+# Logs
+*.log
+*.tmp
+
+# IDE files
+.vscode/
+.idea/
+
+# Process IDs
+*.pid
+
+# Test coverage
+coverage/
